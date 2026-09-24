@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y zsh jq
+
+      - name: Install dependencies
+        if: runner.os == 'macOS'
+        run: command -v jq || brew install jq
+
+      - name: Syntax check
+        run: |
+          for file in zsh-terminal-assistant.plugin.zsh lib/*.zsh lib/providers/*.zsh tests/*.zsh tests/bin/curl; do
+            zsh -n "$file"
+          done
+
+      - name: Unit tests
+        run: zsh tests/run.zsh
+
+      - name: Widget tests
+        run: python3 tests/widgets_test.py
+
+      - name: Widget tests with zsh-autosuggestions and zsh-syntax-highlighting
+        run: |
+          git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "$RUNNER_TEMP/zsh-autosuggestions"
+          git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting "$RUNNER_TEMP/zsh-syntax-highlighting"
+          export ZTA_TEST_PLUGINS="$RUNNER_TEMP/zsh-autosuggestions/zsh-autosuggestions.zsh:$RUNNER_TEMP/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+          python3 tests/widgets_test.py
+
+  zsh-5-8:
+    runs-on: ubuntu-latest
+    container: ubuntu:22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: apt-get update && apt-get install -y zsh jq python3 procps
+      - name: Unit tests
+        run: zsh tests/run.zsh
+      - name: Widget tests
+        run: python3 tests/widgets_test.py
