@@ -1,0 +1,1 @@
+{"choices":[{"message":{"role":"assistant","content":"<think>\nThe user wants disk usage.\n</think>\n\ndf -h"}}]}

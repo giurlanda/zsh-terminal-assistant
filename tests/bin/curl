@@ -1,0 +1,38 @@
+#!/usr/bin/env zsh
+# Fake curl used by the test suite: records the request in $MOCK_DIR and
+# answers with the fixture in $MOCK_RESPONSE.
+#   MOCK_HTTP_CODE  status code printed for --write-out (default 200)
+#   MOCK_CURL_EXIT  simulate a transport failure with this exit code
+#   MOCK_DELAY      seconds to wait before answering
+
+typeset out config body url
+
+print -r -- "$*" >| "$MOCK_DIR/args.txt"
+while (( $# )); do
+  case $1 in
+    --output) out=$2; shift ;;
+    --config) config=$2; shift ;;
+    --data-binary) body=${2#@}; shift ;;
+    --write-out|--max-time|--request|--header) shift ;;
+    --) url=$2; shift ;;
+  esac
+  shift
+done
+
+cp -- "$body" "$MOCK_DIR/request.json"
+cat -- "$config" >| "$MOCK_DIR/config.txt"
+print -r -- "$url" >| "$MOCK_DIR/url.txt"
+
+print $$ >| "$MOCK_DIR/curl.pid"
+if [[ -n $MOCK_DELAY ]]; then
+  sleep $MOCK_DELAY &
+  print $! >| "$MOCK_DIR/sleep.pid"
+  wait
+fi
+if [[ -n $MOCK_CURL_EXIT ]]; then
+  print -r -- "curl: (28) Operation timed out after 60000 milliseconds" >&2
+  exit $MOCK_CURL_EXIT
+fi
+
+cp -- "$MOCK_RESPONSE" "$out"
+printf '%s' "${MOCK_HTTP_CODE:-200}"
