@@ -45,7 +45,7 @@ answers with the fixtures in `tests/fixtures`.
 
 Before a release, check these with a real provider in a real terminal:
 
-- [ ] Ctrl+G: the request disappears, ⏳ is shown, the suggestion appears in cyan with the hint below
+- [ ] Ctrl+G: the request disappears, the spinner is shown, the suggestion appears in cyan with the hint below
 - [ ] Enter accepts: normal colors, hint gone, command not executed
 - [ ] Any other key, including arrows and Ctrl+C, restores the original request
 - [ ] Ctrl+C / Esc while waiting cancel the request and restore the line

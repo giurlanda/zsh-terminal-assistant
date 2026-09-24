@@ -15,7 +15,7 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - Providers: Gemini, OpenAI (Responses and Chat Completions APIs, priority
   processing), OpenRouter, and OpenAI-compatible local servers.
 - `or:` model prefix to force OpenRouter.
-- ⏳ indicator while waiting, with cancellation via Ctrl+C or Esc.
+- Animated spinner while waiting, with cancellation via Ctrl+C or Esc.
 - Configuration through `ZTA_*` environment variables, including custom
   prompts, timeout, history logging and debug mode.
 - Public `zta_request` function for use outside the line editor.

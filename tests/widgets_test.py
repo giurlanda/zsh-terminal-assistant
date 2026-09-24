@@ -26,7 +26,7 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIXTURES = os.path.join(ROOT, "tests", "fixtures")
 CTRL_B, CTRL_C, CTRL_G, CTRL_T = "\x02", "\x03", "\x07", "\x14"
-# A UTF-8 locale is needed for ⏳ and ▶ (C.UTF-8 on Linux, en_US.UTF-8 on macOS).
+# A UTF-8 locale is needed for the spinner and ▶ (C.UTF-8 on Linux, en_US.UTF-8 on macOS).
 LOCALE = os.environ.get("ZTA_TEST_LOCALE", "C.UTF-8" if sys.platform.startswith("linux") else "en_US.UTF-8")
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]|\x1b[=>]|\r")
 
@@ -198,7 +198,7 @@ def test_spinner_and_cancel():
         sh.send("# slow request")
         mark = sh.mark()
         sh.send(CTRL_G)
-        sh.expect("⏳")
+        sh.expect("⠋")
         assert "slow request" not in sh.since(mark), "request still visible while waiting"
         start = time.time()
         sh.send(CTRL_C)
@@ -227,7 +227,7 @@ def test_cancel_with_escape_kills_request():
     sh = Shell(answer="ls", MOCK_DELAY=5)
     try:
         sh.send("# slow request" + CTRL_G)
-        sh.expect("⏳")
+        sh.expect("⠋")
         time.sleep(0.5)
         curl_pid, sleep_pid = (os.path.join(sh.tmp, f) for f in ("curl.pid", "sleep.pid"))
         assert alive(curl_pid) and alive(sleep_pid), "request not running"

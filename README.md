@@ -13,7 +13,7 @@ Works with **Google Gemini**, **OpenAI**, **OpenRouter** and any
 
 ```text
 ❯ # list files sorted by size        ← type a request, press Ctrl+G
-❯ ⏳ … ⠹                              ← the request disappears while waiting
+❯ ⠹                                  ← the request disappears while waiting
 ❯ ls -lhS                            ← the suggestion is shown in cyan
 ▶ Enter = accept  |  Any other key = restore
 ```

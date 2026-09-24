@@ -74,7 +74,7 @@ _zta_read_key() {
   done
 }
 
-# Run zta_request in the background while showing the ⏳ indicator.
+# Run zta_request in the background while showing the spinner.
 # Status 0: REPLY is the answer. Status 1: REPLY is the error message.
 # Status 2: the user cancelled (Ctrl+C or Esc).
 _zta_run() {
@@ -95,7 +95,7 @@ _zta_run() {
     pid=$!
 
     while [[ ! -e $workdir/done ]] && kill -0 $pid 2>/dev/null; do
-      POSTDISPLAY="⏳ … ${ZTA_SPINNER_FRAMES[frame % $#ZTA_SPINNER_FRAMES + 1]}"
+      POSTDISPLAY="${ZTA_SPINNER_FRAMES[frame % $#ZTA_SPINNER_FRAMES + 1]}"
       region_highlight=("0 $#POSTDISPLAY fg=yellow")
       zle -R
       (( frame++ ))
