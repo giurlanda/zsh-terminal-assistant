@@ -28,6 +28,7 @@ FIXTURES = os.path.join(ROOT, "tests", "fixtures")
 CTRL_B, CTRL_C, CTRL_G, CTRL_T = "\x02", "\x03", "\x07", "\x14"
 # A UTF-8 locale is needed for the spinner and ▶ (C.UTF-8 on Linux, en_US.UTF-8 on macOS).
 LOCALE = os.environ.get("ZTA_TEST_LOCALE", "C.UTF-8" if sys.platform.startswith("linux") else "en_US.UTF-8")
+HIDE_CURSOR, SHOW_CURSOR = "\x1b[?25l", "\x1b[?25h"
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]|\x1b[=>]|\r")
 
 
@@ -139,6 +140,7 @@ def test_short_mode_accept():
         sh.expect("Enter = accept  |  Any other key = restore")
         sh.read(0.2)
         raw = sh.since(mark, plain=False)
+        assert raw.rindex(SHOW_CURSOR) > raw.rindex(HIDE_CURSOR), "cursor still hidden after the answer"
         cyan = raw[raw.index("\x1b[36m"):raw.index("\x1b[39m", raw.index("\x1b[36m"))]
         assert ANSI.sub("", cyan) == "echo ZTA_ACCEPTED_$((6*7))", f"suggestion not shown in cyan: {raw!r}"
         sh.send("\r")
@@ -200,9 +202,12 @@ def test_spinner_and_cancel():
         sh.send(CTRL_G)
         sh.expect("⠋")
         assert "slow request" not in sh.since(mark), "request still visible while waiting"
+        assert HIDE_CURSOR in sh.since(mark, plain=False), "cursor not hidden while waiting"
+        mark = sh.mark()
         start = time.time()
         sh.send(CTRL_C)
         sh.read(0.3)
+        assert SHOW_CURSOR in sh.since(mark, plain=False), "cursor not restored after cancel"
         buffer, postdisplay, _ = sh.state()
         assert time.time() - start < 2, "cancel took too long"
         assert buffer == "# slow request", f"buffer not restored: {buffer!r}"

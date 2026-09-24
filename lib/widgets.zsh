@@ -94,6 +94,8 @@ _zta_run() {
       : >"$workdir/done" } &!
     pid=$!
 
+    # Hide the cursor, otherwise it sits on the spinner (the buffer is empty).
+    echoti civis 2>/dev/null
     while [[ ! -e $workdir/done ]] && kill -0 $pid 2>/dev/null; do
       POSTDISPLAY="${ZTA_SPINNER_FRAMES[frame % $#ZTA_SPINNER_FRAMES + 1]}"
       region_highlight=("0 $#POSTDISPLAY fg=yellow")
@@ -115,6 +117,7 @@ _zta_run() {
     return 1
   } always {
     # Also reached when the widget is interrupted by SIGINT.
+    echoti cnorm 2>/dev/null
     (( cancelled )) && [[ -n $pid ]] && _zta_kill_tree $pid
     _zta_is_true ${ZTA_DEBUG:-false} || rm -rf -- "$workdir"
   }
