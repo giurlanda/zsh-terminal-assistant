@@ -1,5 +1,11 @@
 # zsh-terminal-assistant
 
+[![CI](https://github.com/giurlanda/zsh-terminal-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/giurlanda/zsh-terminal-assistant/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/tag/giurlanda/zsh-terminal-assistant?label=release&sort=semver)](https://github.com/giurlanda/zsh-terminal-assistant/tags)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![zsh ≥ 5.8](https://img.shields.io/badge/zsh-%E2%89%A5%205.8-4EAA25?logo=gnubash&logoColor=white)](https://www.zsh.org/)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux-lightgrey)](#requirements)
+
 Use an LLM directly from your zsh command line. Describe what you want in plain
 language, press a hotkey, and get either a ready-to-approve shell command or a
 concise Markdown answer rendered in the terminal.
